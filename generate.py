@@ -51,11 +51,11 @@ corpus = data.Corpus(args.data)
 ntokens = len(corpus.dictionary)
 
 is_transformer_model = hasattr(model, 'model_type') and model.model_type == 'Transformer'
-if not is_transformer_model:
-    hidden = model.init_hidden(1)
+# if not is_transformer_model:
+#     hidden = model.init_hidden(1)
 input = torch.randint(ntokens, (1, 1), dtype=torch.long).to(device)
 
-with open(args.outf, 'w') as outf:
+with open(args.outf, 'w', encoding="utf-8") as outf:
     with torch.no_grad():  # no tracking history
         for i in range(args.words):
             if is_transformer_model:
@@ -65,7 +65,7 @@ with open(args.outf, 'w') as outf:
                 word_tensor = torch.Tensor([[word_idx]]).long().to(device)
                 input = torch.cat([input, word_tensor], 0)
             else:
-                output, hidden = model(input, hidden)
+                output = model(input)
                 word_weights = output.squeeze().div(args.temperature).exp().cpu()
                 word_idx = torch.multinomial(word_weights, 1)[0]
                 input.fill_(word_idx)
