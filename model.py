@@ -5,7 +5,7 @@ import torch.nn.functional as F
 
 class FNNModel(nn.Module):
     # only 1 hidden layer
-    def __init__(self, ntoken, ninp, nhid):
+    def __init__(self, ntoken, ninp, nhid, tie_weights=True):
         '''
         ntoken: size of vocabulary
         ninp: size of embedding; input
@@ -19,13 +19,17 @@ class FNNModel(nn.Module):
         self.ntoken = ntoken
         self.embedding = nn.Embedding(ntoken, ninp)
 
-        # not sure if this weight init is correct; copied from RNN
         initrange = 0.1
         nn.init.uniform_(self.embedding.weight, -initrange, initrange)
 
         self.fc1 = nn.Linear(ninp, nhid)
         self.tanh = nn.Tanh()
         self.fc2 = nn.Linear(nhid, ntoken)
+        if tie_weights:
+            if nhid != ninp:
+                raise ValueError(
+                    'When using the tied flag, nhid must be equal to emsize')
+            self.embedding.weight = self.fc2.weight
 
     def forward(self, x):
         x = self.embedding(x)
@@ -38,7 +42,6 @@ class FNNModel(nn.Module):
         #print("tanh", x.size())
         x = self.fc2(x)
         #print("fc2", x.size())
-        # not sure what im doing here, but it seems to work
         #reshaping [35, 20, 33278] to [700, 33278]
         x = x.view(-1, self.ntoken)
         x = F.log_softmax(x, dim=1) #end with softmax activation
