@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-class FNNModel_KC(nn.Module):
+class FNNModel(nn.Module):
     # only 1 hidden layer
     def __init__(self, ntoken, ninp, nhid):
         '''
