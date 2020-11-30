@@ -1,9 +1,9 @@
 # NLP Assignment 2 Q1
 
-To train the FNN model for 6 epochs run the first command
-To train the FNN 8 gram model run the second command
-To train the FNN model without weight sharing specify tie_weights=false in the FNNmodel constructor
-To generate text with the saved model use the last command
+To train the FNN model for 6 epochs run the first command\
+To train the FNN 8 gram model run the second command\
+To train the FNN model without weight sharing specify tie_weights=false in the FNNmodel constructor\
+To generate text with the saved model use the last command\
 
 ```bash 
 python main.py --cuda --lr 2 --epochs 6 --model FNN
